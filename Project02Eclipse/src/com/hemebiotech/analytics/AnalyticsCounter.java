@@ -1,17 +1,26 @@
 package com.hemebiotech.analytics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AnalyticsCounter {
 
-	public ReadSymptomDataFromFile dataFromFile = new ReadSymptomDataFromFile(
+	public static ReadSymptomDataFromFile dataFromFile = new ReadSymptomDataFromFile(
 			"C:\\Users\\juanc\\Desktop\\Alternance\\Projets\\Projet2\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application\\Project02Eclipse\\symptoms.txt");
-	public List<String> listFromFile = dataFromFile.GetSymptoms();// call the interface method to get all the list of
-																	// symptoms
-	public ArrayList<String> finalSymptomList = new ArrayList<String>();
+	public static List<String> listFromFile = dataFromFile.GetSymptoms();// call the interface method to get all the
+																			// list of
+	// symptoms
+	public static ArrayList<Symptom> finalSymptomList = new ArrayList<Symptom>(Arrays.asList(new Symptom("")));
+	static Map<String, Integer> resultMap = new HashMap<>();
 
 	public static void main(String args[]) throws Exception {
+
+		resultMap = addSymptomToList(listFromFile);
+
+		resultMap.forEach((k, v) -> System.out.println((k + ":" + v)));
 
 		/*
 		 * first get input BufferedReader reader = new BufferedReader(new
@@ -35,4 +44,23 @@ public class AnalyticsCounter {
 		 */
 	}
 
+	public static Map<String, Integer> addSymptomToList(List<String> inputList) {
+
+		for (String symptomString : inputList) {
+			if (resultMap.containsKey(symptomString)) {
+				resultMap.put(symptomString, resultMap.get(symptomString) + 1);
+			} else {
+				resultMap.put(symptomString, 1);
+			}
+		}
+		return resultMap;
+
+		/*
+		 * for (String symptomString : list) { for (int i = 0; i < arrayList.size();
+		 * i++) { if (symptomString.equals(arrayList.get(i).getSymptomName())) { Symptom
+		 * symptom = new Symptom(symptomString); arrayList.add(symptom); i++; }
+		 * 
+		 * } }
+		 */
+	}
 }

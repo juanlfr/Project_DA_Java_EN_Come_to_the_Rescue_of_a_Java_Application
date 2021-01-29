@@ -7,9 +7,9 @@ public class Symptom {
 	public Symptom() {
 	}
 
-	public Symptom(String symptomName, int count) {
+	public Symptom(String symptomName) {
 		this.symptomName = symptomName;
-		this.count = count;
+		this.count = 0;
 	}
 
 	public String getSymptomName() {
