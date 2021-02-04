@@ -2,53 +2,35 @@ package com.hemebiotech.analytics;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class AnalyticsCounter {
 
-	public static ReadSymptomDataFromFile dataFromFile = new ReadSymptomDataFromFile(
-			"C:\\Users\\juanc\\Desktop\\Alternance\\Projets\\Projet2\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application\\Project02Eclipse\\symptoms.txt");
-
-	// call the interface method to get all the list of symptoms
-	public static List<String> listFromFile = dataFromFile.GetSymptoms();
-	// Initialisation of a list of Symptoms objects
-	public static ArrayList<Symptom> finalSymptomList = new ArrayList<Symptom>();
-	// The HashMap that will contain the result data
-	static Map<String, Integer> resultMap = new HashMap<>();
-
-	public static void main(String args[]) throws Exception {
-
-		resultMap = symptomDuplicateCounter(listFromFile);
-
-		resultMap.forEach((k, v) -> System.out.println((k + ":" + v)));
-
-		addToSymptomsList();
-
-		writeOutputFile();
-
+	public AnalyticsCounter() {
 	}
 
-	private static void addToSymptomsList() {
-		resultMap.forEach((k, v) -> {
-			Symptom symptom = new Symptom(k);
-			symptom.setCount(v);
-			finalSymptomList.add(symptom);
-		});
+	/**
+	 * call the interface method to get all the list of symptoms
+	 * 
+	 * @return a list with symptoms
+	 */
+	public List<String> getListFromFile() {
+		ReadSymptomDataFromFile dataFromFile = new ReadSymptomDataFromFile(
+				"C:\\Users\\juanc\\Desktop\\Alternance\\Projets\\Projet2\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application\\Project02Eclipse\\symptoms.txt");
+		return dataFromFile.GetSymptoms();
 	}
 
-	private static void writeOutputFile() throws IOException {
-		FileWriter writer = new FileWriter("result.out");
-		for (Symptom symptom : finalSymptomList) {
-			writer.write(
-					"-The " + symptom.getSymptomName() + " symptom has " + symptom.getCount() + " occurencies" + "\n");
-		}
-		writer.close();
-	}
+	/**
+	 * Its the count function
+	 * 
+	 * @param inputList list of String from the text input file
+	 * @param resultMap is the map to fill with each symptom and its count
+	 * @return
+	 */
 
-	public static Map<String, Integer> symptomDuplicateCounter(List<String> inputList) {
+	public Map<String, Integer> symptomDuplicateCounter(List<String> inputList, Map<String, Integer> resultMap) {
 
 		for (String symptomString : inputList) {
 			if (resultMap.containsKey(symptomString)) {
@@ -57,7 +39,35 @@ public class AnalyticsCounter {
 				resultMap.put(symptomString, 1);
 			}
 		}
-		return resultMap;
+		Map<String, Integer> sortedResultMap = sortbykey(resultMap);
 
+		return sortedResultMap;
 	}
+
+	public TreeMap<String, Integer> sortbykey(Map<String, Integer> map) {
+
+		// TreeMap to store values of HashMap
+		TreeMap<String, Integer> sortedMap = new TreeMap<>();
+
+		// Copy all data from hashMap into TreeMap
+		sortedMap.putAll(map);
+
+		return sortedMap;
+	}
+
+	/**
+	 * Will write an output file with the symptoms count
+	 * 
+	 * @param map
+	 * @throws IOException
+	 */
+
+	public void writeOutputFile(Map<String, Integer> map) throws IOException {
+		FileWriter writer = new FileWriter("result.out");
+		for (Map.Entry<String, Integer> entry : map.entrySet()) {
+			writer.write(" * " + entry.getKey() + " = " + entry.getValue() + "\n");
+		}
+		writer.close();
+	}
+
 }
