@@ -1,25 +1,51 @@
 package com.hemebiotech.analytics;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class AnalyticsCounter {
+	String pathToFile;
 
 	public AnalyticsCounter() {
 	}
 
+	public AnalyticsCounter(String pathToFile) {
+		super();
+		this.pathToFile = pathToFile;
+	}
+
 	/**
-	 * call the interface method to get all the list of symptoms
+	 * Will execute all the methods to analyze data
+	 * 
+	 * @param pathToFile
+	 * @return an alphabetical sorted map
+	 * @throws IOException
+	 */
+	public Map<String, Integer> analyseAndCount(String pathToFile) throws IOException {
+		// The list from the input text file
+		List<String> lisFromFile = getListFromFile(pathToFile);
+		// The HashMap that will contain the result data
+		Map<String, Integer> resultMap = new HashMap<>();
+		Map<String, Integer> sortedMap = symptomDuplicateCounter(lisFromFile, resultMap);
+		writeOutputFile(sortedMap);
+		return sortedMap;
+	}
+
+	/**
+	 * Call the interface method to get all the list of symptoms
 	 * 
 	 * @return a list with symptoms
+	 * @throws IOException
+	 * @throws FileNotFoundException
 	 */
-	public List<String> getListFromFile() {
-		ReadSymptomDataFromFile dataFromFile = new ReadSymptomDataFromFile(
-				"C:\\Users\\juanc\\Desktop\\Alternance\\Projets\\Projet2\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application\\Project02Eclipse\\symptoms.txt");
-		return dataFromFile.GetSymptoms();
+	private List<String> getListFromFile(String path) throws FileNotFoundException, IOException {
+		ISymptomReader symptomeReader = new ReadSymptomDataFromFile(path);
+		return symptomeReader.GetSymptoms();
 	}
 
 	/**
@@ -30,7 +56,7 @@ public class AnalyticsCounter {
 	 * @return
 	 */
 
-	public Map<String, Integer> symptomDuplicateCounter(List<String> inputList, Map<String, Integer> resultMap) {
+	private Map<String, Integer> symptomDuplicateCounter(List<String> inputList, Map<String, Integer> resultMap) {
 
 		for (String symptomString : inputList) {
 			if (resultMap.containsKey(symptomString)) {
@@ -44,7 +70,13 @@ public class AnalyticsCounter {
 		return sortedResultMap;
 	}
 
-	public TreeMap<String, Integer> sortbykey(Map<String, Integer> map) {
+	/**
+	 * Function to sort in alphabetical order
+	 * 
+	 * @param map
+	 * @return
+	 */
+	private TreeMap<String, Integer> sortbykey(Map<String, Integer> map) {
 
 		// TreeMap to store values of HashMap
 		TreeMap<String, Integer> sortedMap = new TreeMap<>();
@@ -62,12 +94,16 @@ public class AnalyticsCounter {
 	 * @throws IOException
 	 */
 
-	public void writeOutputFile(Map<String, Integer> map) throws IOException {
-		FileWriter writer = new FileWriter("result.out");
-		for (Map.Entry<String, Integer> entry : map.entrySet()) {
-			writer.write(" * " + entry.getKey() + " = " + entry.getValue() + "\n");
+	private void writeOutputFile(Map<String, Integer> map) {
+
+		try (FileWriter writer = new FileWriter("result.out")) {
+			for (Map.Entry<String, Integer> entry : map.entrySet()) {
+				writer.write(entry.getKey() + "=" + entry.getValue() + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Un probleme est survenu lors de la creation du fichier");
 		}
-		writer.close();
 	}
 
 }

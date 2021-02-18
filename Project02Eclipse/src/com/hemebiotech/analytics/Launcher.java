@@ -1,27 +1,23 @@
 package com.hemebiotech.analytics;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
 import java.util.Map;
 
 public class Launcher {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		AnalyticsCounter analyticsCounter = new AnalyticsCounter();
 
-		// The HashMap that will contain the result data
-		Map<String, Integer> resultMap = new HashMap<>();
-		// The list from the input text file
-		List<String> inputList = analyticsCounter.getListFromFile();
-
-		resultMap = analyticsCounter.symptomDuplicateCounter(inputList, resultMap);
-
-		// print into the console the result of the count
-		resultMap.forEach((k, v) -> System.out.println((k + "= " + v)));
-
-		analyticsCounter.writeOutputFile(resultMap);
-
+		Map<String, Integer> resultMap;
+		try {
+			resultMap = analyticsCounter.analyseAndCount(
+					"C:\\Users\\juanc\\Desktop\\Alternance\\Projets\\Projet2\\Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application\\Project02Eclipse\\symptoms.txt");
+			// print into the console the result of the count
+			resultMap.forEach((k, v) -> System.out.println((k + "= " + v)));
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Les fichiers n'ont pas pu être ouverts, lus ou crées");
+		}
 	}
-
 }
