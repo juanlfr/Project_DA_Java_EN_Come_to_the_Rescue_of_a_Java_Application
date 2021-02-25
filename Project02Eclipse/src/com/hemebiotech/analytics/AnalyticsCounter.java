@@ -8,16 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * This class has all the methods to count, sort and print the results of a
+ * symptom text file.
+ * 
+ * @author juanc
+ *
+ */
 public class AnalyticsCounter {
-	String pathToFile;
-
-	public AnalyticsCounter() {
-	}
-
-	public AnalyticsCounter(String pathToFile) {
-		super();
-		this.pathToFile = pathToFile;
-	}
 
 	/**
 	 * Will execute all the methods to analyze data
@@ -45,7 +43,7 @@ public class AnalyticsCounter {
 	 */
 	private List<String> getListFromFile(String path) throws FileNotFoundException, IOException {
 		ISymptomReader symptomeReader = new ReadSymptomDataFromFile(path);
-		return symptomeReader.GetSymptoms();
+		return symptomeReader.getSymptoms();
 	}
 
 	/**
@@ -65,8 +63,7 @@ public class AnalyticsCounter {
 				resultMap.put(symptomString, 1);
 			}
 		}
-		Map<String, Integer> sortedResultMap = sortbykey(resultMap);
-
+		Map<String, Integer> sortedResultMap = sortByKey(resultMap);
 		return sortedResultMap;
 	}
 
@@ -76,14 +73,11 @@ public class AnalyticsCounter {
 	 * @param map
 	 * @return
 	 */
-	private TreeMap<String, Integer> sortbykey(Map<String, Integer> map) {
-
+	private TreeMap<String, Integer> sortByKey(Map<String, Integer> map) {
 		// TreeMap to store values of HashMap
 		TreeMap<String, Integer> sortedMap = new TreeMap<>();
-
 		// Copy all data from hashMap into TreeMap
 		sortedMap.putAll(map);
-
 		return sortedMap;
 	}
 
