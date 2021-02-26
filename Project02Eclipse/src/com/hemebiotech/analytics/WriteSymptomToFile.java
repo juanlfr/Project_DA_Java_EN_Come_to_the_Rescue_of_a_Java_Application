@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Class to write the output file with the count results
+ * Class that implements the interface with the method to write the output file with the count results
  * 
  * @author juanc
  *
