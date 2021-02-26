@@ -1,7 +1,5 @@
 package com.hemebiotech.analytics;
 
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +15,10 @@ import java.util.TreeMap;
  */
 public class AnalyticsCounter {
 
+	private ISymptomReader iSymptomReader;
+
+	private ISymptomWriter iSymptomWriter;
+
 	/**
 	 * Will execute all the methods to analyze data
 	 * 
@@ -24,26 +26,13 @@ public class AnalyticsCounter {
 	 * @return an alphabetical sorted map
 	 * @throws IOException
 	 */
-	public Map<String, Integer> analyseAndCount(String pathToFile) throws IOException {
+	public void analyseAndCount() throws IOException {
 		// The list from the input text file
-		List<String> lisFromFile = getListFromFile(pathToFile);
+		List<String> lisFromFile = this.iSymptomReader.getSymptoms();
 		// The HashMap that will contain the result data
 		Map<String, Integer> resultMap = new HashMap<>();
 		Map<String, Integer> sortedMap = symptomDuplicateCounter(lisFromFile, resultMap);
-		writeOutputFile(sortedMap);
-		return sortedMap;
-	}
-
-	/**
-	 * Call the interface method to get all the list of symptoms
-	 * 
-	 * @return a list with symptoms
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	private List<String> getListFromFile(String path) throws FileNotFoundException, IOException {
-		ISymptomReader symptomeReader = new ReadSymptomDataFromFile(path);
-		return symptomeReader.getSymptoms();
+		this.iSymptomWriter.writeOutputFile(sortedMap);
 	}
 
 	/**
@@ -81,23 +70,12 @@ public class AnalyticsCounter {
 		return sortedMap;
 	}
 
-	/**
-	 * Will write an output file with the symptoms count
-	 * 
-	 * @param map
-	 * @throws IOException
-	 */
+	public void setISymptomReader(ISymptomReader iSymptomReader) {
+		this.iSymptomReader = iSymptomReader;
+	}
 
-	private void writeOutputFile(Map<String, Integer> map) {
-
-		try (FileWriter writer = new FileWriter("result.out")) {
-			for (Map.Entry<String, Integer> entry : map.entrySet()) {
-				writer.write(entry.getKey() + "=" + entry.getValue() + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Un probleme est survenu lors de la creation du fichier");
-		}
+	public void setISymptomWriter(ISymptomWriter iSymptomWriter) {
+		this.iSymptomWriter = iSymptomWriter;
 	}
 
 }
